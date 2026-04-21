@@ -6,7 +6,7 @@ import { useState, useRef, useEffect } from 'react'
 import { clsx } from 'clsx'
 
 export function FlowSelector() {
-  const { activeFlowId, setActiveFlowId } = useAppStore()
+  const { activeFlowId, isCustomProfile, setActiveFlowId, setIsCustomProfile } = useAppStore()
   const { loadFlow } = useCareerStore()
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -23,6 +23,7 @@ export function FlowSelector() {
 
   function handleSelect(id: string) {
     setActiveFlowId(id)
+    setIsCustomProfile(false)
     loadFlow(id)
     setOpen(false)
   }
@@ -34,7 +35,7 @@ export function FlowSelector() {
         className="flex items-center gap-2 px-3 py-2 bg-surface-elevated border border-surface-border rounded-lg text-sm text-slate-300 hover:border-accent/50 transition-colors"
       >
         <Zap size={14} className="text-accent" />
-        <span>{active ? active.label : 'Select Demo Flow'}</span>
+        <span>{isCustomProfile ? 'Custom Profile' : active ? active.label : 'Select Demo Flow'}</span>
         <ChevronDown size={14} className={clsx('transition-transform', open && 'rotate-180')} />
       </button>
       {open && (

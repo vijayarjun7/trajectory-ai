@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useRoadmapStore } from '@/store/useRoadmapStore'
 import { useCareerStore } from '@/store/useCareerStore'
 import { useProgressStore } from '@/store/useProgressStore'
@@ -10,7 +11,7 @@ import { Map } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 export function RoadmapPage() {
-  const { roadmap, activePhase, setActivePhase, getPhaseProgress } = useRoadmapStore()
+  const { roadmap, activePhase, setActivePhase, getPhaseProgress, completedTaskIds } = useRoadmapStore()
   const { profile } = useCareerStore()
   const { updateModuleStatus } = useProgressStore()
   const navigate = useNavigate()
@@ -28,25 +29,26 @@ export function RoadmapPage() {
 
   const tabs = roadmap.phases.map((p) => ({
     id: String(p.phase),
-    label: `${p.phase} Days — ${p.label}`,
+    label: p.label,
     badge: `${getPhaseProgress(p.phase)}%`,
   }))
 
-  const activePhaseData = roadmap.phases.find((p) => p.phase === activePhase)!
+  const activePhaseData = roadmap.phases.find((p) => p.phase === activePhase) ?? roadmap.phases[0]
 
   const overallProgress = Math.round(
     roadmap.phases.reduce((sum, p) => sum + getPhaseProgress(p.phase), 0) / 3
   )
 
-  if (overallProgress > 0) {
-    updateModuleStatus('roadmap', overallProgress)
-  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    if (overallProgress > 0) updateModuleStatus('roadmap', overallProgress)
+  }, [completedTaskIds])
 
   return (
     <div className="space-y-6 animate-fade-in">
       <SectionHeader
         title="Your Roadmap"
-        subtitle={`${profile.currentRole} → ${profile.targetRole} — 30/60/90-day plan`}
+        subtitle={`${profile.currentRole} → ${profile.targetRole} — ${roadmap.totalMonths ?? 3}-month plan`}
       />
 
       <div className="flex items-center gap-4">
@@ -59,7 +61,7 @@ export function RoadmapPage() {
       <Tabs
         tabs={tabs}
         activeId={String(activePhase)}
-        onChange={(id) => setActivePhase(parseInt(id) as 30 | 60 | 90)}
+        onChange={(id) => setActivePhase(parseInt(id))}
       />
 
       <PhaseColumn phase={activePhaseData} />

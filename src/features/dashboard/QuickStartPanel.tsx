@@ -8,11 +8,12 @@ import { useNavigate } from 'react-router-dom'
 
 export function QuickStartPanel() {
   const { loadFlow } = useCareerStore()
-  const { setActiveFlowId } = useAppStore()
+  const { setActiveFlowId, setIsCustomProfile } = useAppStore()
   const navigate = useNavigate()
 
   function handleFlow(id: string) {
     setActiveFlowId(id)
+    setIsCustomProfile(false)
     loadFlow(id)
     navigate('/analysis')
   }

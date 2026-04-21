@@ -6,7 +6,7 @@ import type {
 } from '@/types'
 import { MockEngine } from './mockEngine'
 
-const MODEL = 'gemini-1.5-flash'
+const MODEL = 'gemini-1.5-flash-latest'
 
 function buildAnalysisPrompt(profile: CareerProfile): string {
   return `You are a senior career coach. Analyze this career transition and return ONLY valid JSON matching the schema exactly.
@@ -90,7 +90,8 @@ export class GeminiAdapter implements AIAdapter {
   async analyzeCareerGap(profile: CareerProfile): Promise<CareerAnalysis> {
     try {
       return await this.generateJSON<CareerAnalysis>(buildAnalysisPrompt(profile))
-    } catch {
+    } catch (e) {
+      console.error('[GeminiAdapter] analyzeCareerGap failed:', e)
       return this.fallback.analyzeCareerGap(profile)
     }
   }

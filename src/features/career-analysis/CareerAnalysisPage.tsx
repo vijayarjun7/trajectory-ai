@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useCareerStore } from '@/store/useCareerStore'
 import { useProgressStore } from '@/store/useProgressStore'
 import { ProfileInputForm } from './ProfileInputForm'
@@ -14,14 +14,21 @@ import { SkeletonCard } from '@/components/ui/Skeleton'
 import { RefreshCw } from 'lucide-react'
 
 export function CareerAnalysisPage() {
-  const { profile, analysis, isAnalyzing, runAnalysis } = useCareerStore()
+  const { profile, analysis, isAnalyzing, error, runAnalysis } = useCareerStore()
   const { updateModuleStatus } = useProgressStore()
   const [showForm, setShowForm] = useState(!profile)
+  const [formKey, setFormKey] = useState(0)
+
+  // When a demo flow is loaded (profile + analysis both set), hide the form
+  useEffect(() => {
+    if (profile && analysis) setShowForm(false)
+    if (!profile) setShowForm(true)
+  }, [profile, analysis])
 
   async function handleRunAnalysis() {
+    setShowForm(false)
     await runAnalysis()
     updateModuleStatus('analysis', 100)
-    setShowForm(false)
   }
 
   return (
@@ -30,16 +37,22 @@ export function CareerAnalysisPage() {
         title="Career Analysis"
         subtitle="Understand your gaps, strengths, and transition readiness"
         action={
-          analysis && (
-            <Button variant="ghost" size="sm" onClick={() => setShowForm(!showForm)}>
-              {showForm ? 'View Analysis' : 'Edit Profile'}
+          profile && (
+            <Button variant="ghost" size="sm" onClick={() => { setShowForm(!showForm); setFormKey(k => k + 1) }}>
+              {showForm ? (analysis ? 'View Analysis' : 'Cancel') : 'Edit Profile'}
             </Button>
           )
         }
       />
 
       {(showForm || !profile) && (
-        <ProfileInputForm onSubmit={() => { handleRunAnalysis(); setShowForm(false) }} />
+        <ProfileInputForm key={formKey} onSubmit={handleRunAnalysis} />
+      )}
+
+      {error && !isAnalyzing && (
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-400">
+          Analysis error: {error}
+        </div>
       )}
 
       {isAnalyzing && (

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useCareerStore } from '@/store/useCareerStore'
+import { useAppStore } from '@/store/useAppStore'
 import { ROLE_REGISTRY } from '@/data/roleRegistry'
 import { Card } from '@/components/ui/Card'
 import { Button } from '@/components/ui/Button'
@@ -11,12 +12,15 @@ interface Props {
 
 export function ProfileInputForm({ onSubmit }: Props) {
   const { profile, setProfile } = useCareerStore()
+  const { setIsCustomProfile, setActiveFlowId } = useAppStore()
   const roles = Object.keys(ROLE_REGISTRY)
 
   const [form, setForm] = useState({
     currentRole: profile?.currentRole ?? '',
     targetRole: profile?.targetRole ?? '',
     yearsExperience: profile?.yearsExperience ?? 2,
+    availableHoursPerWeek: profile?.availableHoursPerWeek ?? 10,
+    targetTimelineMonths: profile?.targetTimelineMonths ?? 6,
     goal: profile?.goal ?? '',
     resumeSummary: profile?.resumeSummary ?? '',
     currentSkillsStr: profile?.currentSkills.join(', ') ?? '',
@@ -29,12 +33,16 @@ export function ProfileInputForm({ onSubmit }: Props) {
       currentRole: form.currentRole,
       targetRole: form.targetRole,
       yearsExperience: form.yearsExperience,
+      availableHoursPerWeek: form.availableHoursPerWeek,
+      targetTimelineMonths: form.targetTimelineMonths,
       goal: form.goal,
       resumeSummary: form.resumeSummary || undefined,
       currentSkills: form.currentSkillsStr.split(',').map(s => s.trim()).filter(Boolean),
       track: ROLE_REGISTRY[form.targetRole]?.track ?? 'engineering',
     }
     setProfile(p)
+    setIsCustomProfile(true)
+    setActiveFlowId(null)
     onSubmit()
   }
 
@@ -69,15 +77,37 @@ export function ProfileInputForm({ onSubmit }: Props) {
           </div>
         </div>
 
-        <div>
-          <label className="block text-xs font-medium text-slate-400 mb-1.5">Years of Experience</label>
-          <input
-            type="number"
-            min={0} max={30}
-            value={form.yearsExperience}
-            onChange={(e) => setForm({ ...form, yearsExperience: parseInt(e.target.value) || 0 })}
-            className="w-full bg-surface-elevated border border-surface-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent"
-          />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-xs font-medium text-slate-400 mb-1.5">Years of Experience</label>
+            <input
+              type="number"
+              min={0} max={30}
+              value={form.yearsExperience}
+              onChange={(e) => setForm({ ...form, yearsExperience: parseInt(e.target.value) || 0 })}
+              className="w-full bg-surface-elevated border border-surface-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-400 mb-1.5">Hours/week available</label>
+            <input
+              type="number"
+              min={1} max={60}
+              value={form.availableHoursPerWeek}
+              onChange={(e) => setForm({ ...form, availableHoursPerWeek: parseInt(e.target.value) || 5 })}
+              className="w-full bg-surface-elevated border border-surface-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-slate-400 mb-1.5">Target timeline (months)</label>
+            <input
+              type="number"
+              min={1} max={24}
+              value={form.targetTimelineMonths}
+              onChange={(e) => setForm({ ...form, targetTimelineMonths: parseInt(e.target.value) || 6 })}
+              className="w-full bg-surface-elevated border border-surface-border rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-accent"
+            />
+          </div>
         </div>
 
         <div>

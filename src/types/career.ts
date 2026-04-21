@@ -5,6 +5,8 @@ export interface CareerProfile {
   currentRole: string
   targetRole: string
   yearsExperience: number
+  availableHoursPerWeek?: number
+  targetTimelineMonths?: number
   goal: string
   resumeSummary?: string
   currentSkills: string[]

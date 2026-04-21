@@ -25,6 +25,8 @@ export function QuestionPanel({ question, questionNumber, total, interviewMode, 
 
   const answer = interviewMode === 'voice' ? voiceAnswer : textAnswer
 
+
+
   async function handleSubmit() {
     if (!answer.trim()) return
     await submitAnswer(answer)

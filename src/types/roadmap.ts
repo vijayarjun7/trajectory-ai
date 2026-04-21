@@ -17,7 +17,7 @@ export interface PortfolioProject {
 }
 
 export interface RoadmapPhase {
-  phase: 30 | 60 | 90
+  phase: number
   label: string
   goal: string
   tasks: RoadmapTask[]
@@ -30,6 +30,7 @@ export interface Roadmap {
   id: string
   profileId: string
   targetRole: string
+  totalMonths?: number
   phases: [RoadmapPhase, RoadmapPhase, RoadmapPhase]
   createdAt: string
 }

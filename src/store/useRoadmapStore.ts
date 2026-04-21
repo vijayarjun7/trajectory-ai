@@ -5,11 +5,11 @@ import type { Roadmap } from '@/types'
 interface RoadmapState {
   roadmap: Roadmap | null
   completedTaskIds: string[]
-  activePhase: 30 | 60 | 90
+  activePhase: number
   setRoadmap: (r: Roadmap) => void
   toggleTask: (taskId: string) => void
-  setActivePhase: (p: 30 | 60 | 90) => void
-  getPhaseProgress: (phase: 30 | 60 | 90) => number
+  setActivePhase: (p: number) => void
+  getPhaseProgress: (phase: number) => number
   reset: () => void
 }
 
@@ -20,7 +20,7 @@ export const useRoadmapStore = create<RoadmapState>()(
       completedTaskIds: [],
       activePhase: 30,
 
-      setRoadmap: (r) => set({ roadmap: r }),
+      setRoadmap: (r) => set({ roadmap: r, activePhase: r.phases[0]?.phase ?? 30 }),
 
       toggleTask: (taskId) => {
         const { completedTaskIds } = get()

@@ -112,7 +112,6 @@ export function useVoiceInterview(): UseVoiceInterviewReturn {
     setTranscriptState('')
 
     recognition.onstart = () => {
-      setIsRecording(true)
       setError(null)
     }
 
@@ -150,6 +149,7 @@ export function useVoiceInterview(): UseVoiceInterviewReturn {
     recognitionRef.current = recognition
     try {
       recognition.start()
+      setIsRecording(true)  // immediate feedback before onstart fires
     } catch {
       setError({ code: 'RECOGNITION_ERROR', message: 'Failed to start recording. Please try again.' })
     }

@@ -13,20 +13,25 @@ import type { TransitionStrategy } from '@/types'
 import { useNavigate } from 'react-router-dom'
 
 export function TransitionPage() {
-  const { profile, analysis } = useCareerStore()
+  const { profile, analysis, strategy: cachedStrategy } = useCareerStore()
   const { updateModuleStatus } = useProgressStore()
   const navigate = useNavigate()
-  const [strategy, setStrategy] = useState<TransitionStrategy | null>(null)
+  const [strategy, setStrategy] = useState<TransitionStrategy | null>(cachedStrategy)
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
+    if (cachedStrategy) {
+      setStrategy(cachedStrategy)
+      updateModuleStatus('transition', 100)
+      return
+    }
     if (profile && analysis && !strategy) {
       setLoading(true)
       getAdapter().generateTransitionStrategy(profile, analysis)
         .then((s) => { setStrategy(s); updateModuleStatus('transition', 100) })
         .finally(() => setLoading(false))
     }
-  }, [profile, analysis])
+  }, [profile, analysis, cachedStrategy])
 
   if (!profile || !analysis) {
     return (

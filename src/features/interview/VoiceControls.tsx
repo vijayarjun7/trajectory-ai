@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { useVoiceInterview } from '@/hooks/useVoiceInterview'
 import { Button } from '@/components/ui/Button'
 import { Play, Square, Mic, MicOff, AlertCircle } from 'lucide-react'
@@ -17,6 +18,20 @@ export function VoiceControls({ questionText, onTranscriptChange }: VoiceControl
     startRecording, stopRecording,
     setTranscript,
   } = useVoiceInterview()
+
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  // Debounce sync to parent — update immediately on stop, debounced during live STT
+  useEffect(() => {
+    if (!isRecording) {
+      // Recording stopped — sync final value immediately
+      onTranscriptChange(transcript)
+      return
+    }
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    debounceRef.current = setTimeout(() => onTranscriptChange(transcript), 300)
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [transcript, isRecording])
 
   function handleTranscriptEdit(text: string) {
     setTranscript(text)
