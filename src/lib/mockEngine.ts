@@ -272,7 +272,10 @@ function buildDynamicAnalysis(profile: CareerProfile): CareerAnalysis {
     }
   }
 
-  const readinessScore = 30 + Math.min(profile.yearsExperience * 3, 25)
+  const readinessScore = 40 + Math.min(profile.yearsExperience * 3, 25)
+  const transitionDifficulty: CareerAnalysis['transitionDifficulty'] =
+    readinessScore >= 58 ? 'moderate' : readinessScore >= 46 ? 'challenging' : 'very-challenging'
+
   const timeline = profile.targetTimelineMonths
     ? `${profile.targetTimelineMonths} months`
     : '4–6 months'
@@ -295,7 +298,7 @@ function buildDynamicAnalysis(profile: CareerProfile): CareerAnalysis {
     ],
     readinessScore,
     estimatedTimeline: timeline,
-    transitionDifficulty: readinessScore > 50 ? 'moderate' : 'challenging',
+    transitionDifficulty,
     recommendedTopics: roleData.topics,
     recommendedInterviewTopics: roleData.interviewTopics,
     generatedAt: new Date().toISOString(),
