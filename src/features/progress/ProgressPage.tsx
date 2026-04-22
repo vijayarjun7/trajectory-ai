@@ -59,7 +59,7 @@ export function ProgressPage() {
           <div className="space-y-2">
             {tracker.moduleStatuses.map((s) => (
               <div key={s.module} className="flex items-center gap-3">
-                <span className="text-xs text-slate-500 w-36 shrink-0">{s.label}</span>
+                <span className="text-xs text-slate-500 w-20 md:w-36 shrink-0 truncate">{s.label}</span>
                 <ProgressBar
                   value={s.percentComplete}
                   className="flex-1"

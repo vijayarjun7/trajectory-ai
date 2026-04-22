@@ -66,7 +66,7 @@ export function CareerAnalysisPage() {
       {analysis && !isAnalyzing && !showForm && (
         <div className="space-y-6">
           {/* Readiness overview */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card className="flex flex-col items-center justify-center gap-2 py-6">
               <ScoreRing
                 score={analysis.readinessScore}

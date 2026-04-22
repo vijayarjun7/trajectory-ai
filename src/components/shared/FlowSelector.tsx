@@ -39,7 +39,7 @@ export function FlowSelector() {
         <ChevronDown size={14} className={clsx('transition-transform', open && 'rotate-180')} />
       </button>
       {open && (
-        <div className="absolute top-full mt-2 left-0 w-64 bg-surface-elevated border border-surface-border rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in">
+        <div className="absolute top-full mt-2 right-0 w-56 md:w-64 bg-surface-elevated border border-surface-border rounded-xl shadow-xl z-50 overflow-hidden animate-fade-in">
           <div className="px-3 py-2 border-b border-surface-border">
             <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">Demo Flows</span>
           </div>
